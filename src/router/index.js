@@ -3,7 +3,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 const routes = [
   {
     path: '/',
-    redirect: '/main'
+    redirect: '/auth'
   }, {
     path: '/login',
     redirect: '/user'
@@ -56,6 +56,9 @@ const routes = [
         component: () => import('@/views/score/MyScore.vue')
       }
     ]
+  }, {
+    path: '/auth',
+    component: () => import('@/views/Auth.vue')
   }
 ]
 const router = createRouter({

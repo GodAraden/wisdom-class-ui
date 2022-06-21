@@ -31,3 +31,11 @@ export function whoAmI (data = {}) {
     data
   });
 }
+
+export function changeInfo (data = {}) {
+  return request({
+    url: '/api/v1/user/changeInfo',
+    method: 'post',
+    data
+  });
+}

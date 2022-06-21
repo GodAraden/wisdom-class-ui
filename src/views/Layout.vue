@@ -16,26 +16,36 @@
     </a-layout-sider>
     <a-layout>
       <a-layout-header class="layout-header-bg">
-        <a-dropdown>
-          <a class="ant-dropdown-link" @click.prevent>
-            欢迎！{{ userInfo.username }} {{ getPermName(userInfo.user_type) }}
-            <DownOutlined />
-          </a>
-          <template #overlay>
-            <a-menu @click="onClick">
-              <a-menu-item key="info">个人信息</a-menu-item>
-              <a-menu-divider />
-              <a-menu-item key="logout">退出登录</a-menu-item>
-            </a-menu>
-          </template>
-        </a-dropdown>
+        <div style="float: left">
+          班级：
+          <a-select v-model:value="classID">
+            <a-select-option value="2011102">2011102</a-select-option>
+          </a-select>
+          <a-button v-if="userInfo.user_type === 0" type="text">+ new</a-button>
+        </div>
+        <div style="float: right">
+          <a-dropdown>
+            <a class="ant-dropdown-link" @click.prevent>
+              欢迎！{{ userInfo.username }}
+              {{ getPermName(userInfo.user_type) }}
+              <DownOutlined />
+            </a>
+            <template #overlay>
+              <a-menu @click="onClick">
+                <a-menu-item key="info">个人信息</a-menu-item>
+                <a-menu-divider />
+                <a-menu-item key="logout">退出登录</a-menu-item>
+              </a-menu>
+            </template>
+          </a-dropdown>
+        </div>
       </a-layout-header>
-      <a-layout-content style="margin: 16px 16px">
+      <a-layout-content class="layout-content-bg">
         <router-view></router-view>
       </a-layout-content>
-      <a-layout-footer style="text-align: center">
+      <!-- <a-layout-footer style="text-align: center">
         Ant Design ©2018 Created by Ant UED
-      </a-layout-footer>
+      </a-layout-footer> -->
     </a-layout>
   </a-layout>
 </template>
@@ -55,6 +65,7 @@ const router = useRouter()
 const selectedKeys = ref([])
 const collapsed = ref(false)
 const options = ref([])
+const classID = ref('2011102')
 const userInfo = reactive({
   username: '',
   user_type: null,
@@ -81,6 +92,7 @@ const logout = async () => {
 }
 const onClick = ({ key }) => {
   if (key === 'info') {
+    router.push('/auth')
   } else if (key === 'logout') {
     logout()
     router.push('/user')
@@ -104,7 +116,11 @@ whoAmI()
   }
   .layout-header-bg {
     background-color: #fff;
-    text-align: right;
+  }
+  .layout-content-bg {
+    margin: 3.2vh;
+    background-color: #fff;
+    overflow-y: scroll;
   }
 }
 </style>
