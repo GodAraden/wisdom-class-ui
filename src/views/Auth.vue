@@ -26,7 +26,7 @@
               {{ getPermName(item.value) }}
             </template>
             <template v-else-if="item.key === 'sex'">
-              <a-select v-model:value="item.value">
+              <a-select v-model:value="item.value" style="width: 60px">
                 <a-select-option value="男">男</a-select-option>
                 <a-select-option value="女">女</a-select-option>
               </a-select>

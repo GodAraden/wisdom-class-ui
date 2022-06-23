@@ -127,6 +127,7 @@ const checkRegs = {
   password: /\w{6,20}/,
   confirmPassword: /\n/,
 } // 表单校验正则
+
 const checkText = (key, msg) => {
   if (!checkRegs[key]?.test(formState[key])) {
     message.error(msg)

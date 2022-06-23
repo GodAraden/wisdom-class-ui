@@ -1,3 +1,6 @@
+import { h } from 'vue'
+import { notification, Button } from 'ant-design-vue'
+
 export function getPermName (perm) {
   if (perm == '0') {
     return '老师'
@@ -21,4 +24,22 @@ export function englishToChinese (word) {
     case 'birthday':
       return '出生日期'
   }
+}
+
+export function globalNotice (k, manageRequest) {
+  const key = k.class + '-' + k.username
+  notification.open({
+    message: `${k.class} 邀请您加入`,
+    description: h('div', {}, [
+      h(Button, {
+        danger: true, style: 'margin-right:10px', onClick: () => manageRequest(2, k, key)
+      }, '拒绝'),
+      h(Button, {
+        type: 'primary', ghost: true, onClick: () => manageRequest(1, k, key)
+      }, '加入'),
+    ]),
+    placement: 'bottomRight',
+    duration: null,
+    key
+  })
 }

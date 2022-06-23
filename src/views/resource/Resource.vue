@@ -8,8 +8,8 @@
     <template #renderItem="{ item }">
       <a-list-item>
         <template #actions>
-          <a key="list-loadmore-edit">下载</a>
-          <a key="list-loadmore-more">删除</a>
+          <a>下载</a>
+          <a v-if="userType === 0">删除</a>
         </template>
         <a-skeleton avatar :title="false" :loading="!!item.loading" active>
           <a-list-item-meta
@@ -27,6 +27,9 @@
       </a-list-item>
     </template>
   </a-list>
+  <a-button v-if="userType === 0" type="primary" style="margin-left: 10px"
+    >上传资源</a-button
+  >
   <a-pagination
     style="float: right"
     :total="90"
@@ -36,6 +39,12 @@
 </template>
 <script setup>
 import { onMounted, ref } from 'vue'
+const props = defineProps({
+  userType: Number,
+  username: String,
+  classID: Number | null,
+})
+
 const count = 7
 const fakeDataUrl = `https://randomuser.me/api/?results=${count}&inc=name,gender,email,nat,picture&noinfo`
 

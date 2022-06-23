@@ -36,6 +36,12 @@
 </template>
 <script setup>
 import { onMounted, ref } from 'vue'
+const props = defineProps({
+  userType: Number,
+  username: String,
+  classID: Number | null,
+})
+
 const count = 7
 const fakeDataUrl = `https://randomuser.me/api/?results=${count}&inc=name,gender,email,nat,picture&noinfo`
 

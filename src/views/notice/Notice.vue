@@ -1,5 +1,5 @@
 <template>
-  <div class="funcBar">
+  <div v-if="userType === 0" class="funcBar">
     <a-button type="primary">新增通知</a-button>
     <a-button>修改选中通知</a-button>
     <a-button danger type="primary">删除选中通知</a-button>
@@ -9,28 +9,20 @@
     :columns="columns"
     :data-source="data"
     :pagination="{ pageSize: 10 }"
-    :scroll="{ y: '58vh' }"
+    :scroll="{ y: userType === 0 ? '58vh' : '66vh' }"
   />
 </template>
 
 <script setup>
 import { computed, ref, unref } from 'vue'
 import { Table } from 'ant-design-vue'
-const columns = [
-  {
-    title: '标题',
-    dataIndex: 'name',
-    width: '60%',
-  },
-  {
-    title: '发布者',
-    dataIndex: 'age',
-  },
-  {
-    title: '最后修改时间',
-    dataIndex: 'address',
-  },
-]
+import { noticeColumns as columns } from '@/utils/staticdata.js'
+const props = defineProps({
+  userType: Number,
+  username: String,
+  classID: Number | null,
+})
+
 const data = []
 
 for (let i = 0; i < 46; i++) {

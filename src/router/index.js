@@ -30,10 +30,10 @@ const routes = [
         permission: -1,
         component: () => import('@/views/resource/Resource.vue')
       }, {
-        path: 'students',
-        name: '学生管理',
+        path: 'members',
+        name: '成员管理',
         permission: 0,
-        component: () => import('@/views/students/Students.vue')
+        component: () => import('@/views/members/Members.vue')
       }, {
         path: 'homework',
         name: '作业发布',

@@ -1,122 +1,89 @@
 <template>
   <a-layout class="layout-bg">
     <a-layout-sider v-model:collapsed="collapsed" collapsible>
-      <div class="logo" />
-      <a-menu
-        v-model:selectedKeys="selectedKeys"
-        theme="dark"
-        mode="inline"
-        @select="select"
-      >
-        <a-menu-item v-for="item in options" :key="item.path">
-          <pie-chart-outlined />
-          <span>{{ item.name }}</span>
-        </a-menu-item>
-      </a-menu>
+      <my-aside :userType="parseInt(userInfo.user_type)"></my-aside>
     </a-layout-sider>
     <a-layout>
-      <a-layout-header class="layout-header-bg">
-        <div style="float: left">
-          班级：
-          <a-select v-model:value="classID">
-            <a-select-option value="2011102">2011102</a-select-option>
-          </a-select>
-          <a-button v-if="userInfo.user_type === 0" type="text">+ new</a-button>
-        </div>
-        <div style="float: right">
-          <a-dropdown>
-            <a class="ant-dropdown-link" @click.prevent>
-              欢迎！{{ userInfo.username }}
-              {{ getPermName(userInfo.user_type) }}
-              <DownOutlined />
-            </a>
-            <template #overlay>
-              <a-menu @click="onClick">
-                <a-menu-item key="info">个人信息</a-menu-item>
-                <a-menu-divider />
-                <a-menu-item key="logout">退出登录</a-menu-item>
-              </a-menu>
-            </template>
-          </a-dropdown>
-        </div>
-      </a-layout-header>
+      <my-header
+        :classes="classes"
+        :userInfo="userInfo"
+        v-model:classID="classID"
+        @init="init"
+      ></my-header>
       <a-layout-content class="layout-content-bg">
-        <router-view></router-view>
+        <router-view
+          :userType="parseInt(userInfo.user_type)"
+          :username="userInfo.username"
+          :classID="classID"
+        ></router-view>
       </a-layout-content>
-      <!-- <a-layout-footer style="text-align: center">
-        Ant Design ©2018 Created by Ant UED
-      </a-layout-footer> -->
     </a-layout>
   </a-layout>
 </template>
-<script setup>
-import {
-  PieChartOutlined,
-  DesktopOutlined,
-  DownOutlined,
-} from '@ant-design/icons-vue'
-import { reactive, ref } from 'vue'
-import { useRouter } from 'vue-router'
-import { whoAmI as apiWhoAmI, logout as apiLogout } from '@/api/user.js'
-import { getPermName } from '@/utils/tools.js'
-import { message } from 'ant-design-vue'
 
-const router = useRouter()
-const selectedKeys = ref([])
+<script setup>
+import MyHeader from '@/components/layout/Header.vue'
+import MyAside from '@/components/layout/Aside.vue'
+import { reactive, ref } from 'vue'
+import { whoAmI as apiWhoAmI } from '@/api/user.js'
+import {
+  findClassByUser,
+  getRequest as apiGetRequest,
+  manageRequest as apiManageRequest,
+} from '@/api/class.js'
+import { globalNotice } from '@/utils/tools.js'
+import { notification, message } from 'ant-design-vue'
+
 const collapsed = ref(false)
-const options = ref([])
-const classID = ref('2011102')
+const classID = ref(null)
+const classes = ref([])
 const userInfo = reactive({
+  display_name: '',
   username: '',
   user_type: null,
 })
-const whoAmI = async () => {
+
+const init = async () => {
   const res = await apiWhoAmI()
+  userInfo.display_name = res.data.name || res.data.username
   userInfo.username = res.data.username
   userInfo.user_type = res.data.user_type
-  for (const k of router.options.routes) {
-    if (k.path === '/main') {
-      for (const child of k.children) {
-        if (child.path !== '') {
-          if (child.permission == userInfo.user_type || child.permission == -1)
-            options.value.push(child)
-        }
-      }
-    }
+  const res1 = await findClassByUser({
+    user: userInfo.username,
+  })
+  classes.value = res1.data
+  if (classes.value.length) {
+    classID.value = classes.value[0].id
   }
-  selectedKeys.value[0] = options.value[0].path
-}
-const logout = async () => {
-  const res = await apiLogout()
-  message.success(res.data)
-}
-const onClick = ({ key }) => {
-  if (key === 'info') {
-    router.push('/auth')
-  } else if (key === 'logout') {
-    logout()
-    router.push('/user')
+  const res2 = await apiGetRequest({
+    username: userInfo.username,
+    type: -1,
+  })
+  for (const k of res2.data) {
+    globalNotice(k, manageRequest)
   }
-}
-const select = ({ key }) => {
-  router.push(key)
 }
 
-whoAmI()
+const manageRequest = async (status, k, key) => {
+  const res = await apiManageRequest({
+    status,
+    request: k.username,
+    class: k.class,
+  })
+  if (res.Code === 0) {
+    message.success(res.data)
+    notification.close(key)
+    init()
+  }
+}
+
+init()
 </script>
 
 <style lang="less" scoped>
 .layout-bg {
   width: 100vw;
   height: 100vh;
-  .logo {
-    height: 32px;
-    margin: 16px;
-    background: rgba(255, 255, 255, 0.3);
-  }
-  .layout-header-bg {
-    background-color: #fff;
-  }
   .layout-content-bg {
     margin: 3.2vh;
     background-color: #fff;
