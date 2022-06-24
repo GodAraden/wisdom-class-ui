@@ -15,11 +15,9 @@
             <a-menu-item key="register"> 注册 </a-menu-item>
           </a-menu>
           <a-input
-            :class="`form-item ${
-              errorInput.phoneNumber ? 'input-error' : 'input'
-            }`"
+            :class="`form-item ${error.phone ? 'input-error' : 'input'}`"
             size="large"
-            v-model:value="formState.phoneNumber"
+            v-model:value="formState.phone"
             :bordered="false"
             placeholder="请输入你的手机号"
           >
@@ -28,9 +26,7 @@
             </template>
           </a-input>
           <a-input-password
-            :class="`form-item ${
-              errorInput.password ? 'input-error' : 'input'
-            }`"
+            :class="`form-item ${error.password ? 'input-error' : 'input'}`"
             size="large"
             v-model:value="formState.password"
             :bordered="false"
@@ -45,11 +41,9 @@
           </div>
           <template v-else>
             <a-input-password
-              :class="`form-item ${
-                errorInput.confirmPassword ? 'input-error' : 'input'
-              }`"
+              :class="`form-item ${error.confirmPwd ? 'input-error' : 'input'}`"
               size="large"
-              v-model:value="formState.confirmPassword"
+              v-model:value="formState.confirmPwd"
               :bordered="false"
               placeholder="请确认你的密码"
             >
@@ -59,9 +53,9 @@
             </a-input-password>
             <div class="confirm-number-bar form-item">
               <a-input
-                :class="errorInput.confirmNumber ? 'input-error' : 'input'"
+                :class="error.confirmNum ? 'input-error' : 'input'"
                 size="large"
-                v-model:value="formState.confirmNumber"
+                v-model:value="formState.confirmNum"
                 :bordered="false"
                 placeholder="请输入验证码"
               >
@@ -73,7 +67,7 @@
                 class="input"
                 type="text"
                 size="large"
-                :disabled="confirmDisabled"
+                :disabled="confirmBtnDisabled"
                 @click="sendConfirmNumber"
                 >{{ confirmText }}</a-button
               >
@@ -96,60 +90,55 @@
 
 <script setup>
 import { ref, reactive } from 'vue'
-import {
-  PhoneOutlined,
-  KeyOutlined,
-  CommentOutlined,
-} from '@ant-design/icons-vue'
 import { message } from 'ant-design-vue'
 import { register as apiRegister, login as apiLogin } from '@/api/user.js'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
 const current = ref(['login'])
-const confirmDisabled = ref(false) // 发送验证码按钮是否禁用
+const confirmBtnDisabled = ref(false) // 发送验证码按钮是否禁用
 const confirmText = ref('获取验证码') // 发送验证码按钮文本
 const formState = reactive({
-  phoneNumber: '',
+  phone: '',
   password: '',
-  confirmPassword: '',
-  confirmNumber: '',
+  confirmPwd: '',
+  confirmNum: '',
   remember: false,
 }) // 表单数据
-const errorInput = reactive({
-  phoneNumber: false,
+const error = reactive({
+  phone: false,
   password: false,
-  confirmPassword: false,
-  confirmNumber: false,
+  confirmPwd: false,
+  confirmNum: false,
 }) // 表单出错状态
 const checkRegs = {
-  phoneNumber: /^1[3-9]\d{9}/,
+  phone: /^1[3-9]\d{9}/,
   password: /\w{6,20}/,
-  confirmPassword: /\n/,
+  confirmPwd: /\n/,
 } // 表单校验正则
 
 const checkText = (key, msg) => {
   if (!checkRegs[key]?.test(formState[key])) {
     message.error(msg)
-    errorInput[key] = true
+    error[key] = true
     setTimeout(() => {
-      errorInput[key] = false
+      error[key] = false
     }, 3000)
     return false
   } else return true
 } // 表单校验，若出错则提示
 const user = async () => {
-  if (!checkText('phoneNumber', '请输入正确的手机号码')) return
+  if (!checkText('phone', '请输入正确的手机号码')) return
   if (!checkText('password', '请设置6到20位的密码')) return
   if (current.value[0] === 'register') {
-    if (formState.password !== formState.confirmPassword) {
-      checkText('confirmPassword', '两次密码输入不匹配，请检查')
+    if (formState.password !== formState.confirmPwd) {
+      checkText('confirmPwd', '两次密码输入不匹配，请检查')
       return
     }
     const res = await apiRegister({
-      username: formState.phoneNumber,
+      username: formState.phone,
       password: formState.password,
-      confirm_number: formState.confirmNumber,
+      confirm_number: formState.confirmNum,
     })
     if (res.Code === 0) {
       message.success(res.data + '，即将自动登录')
@@ -158,7 +147,7 @@ const user = async () => {
     }
   }
   const res = await apiLogin({
-    username: formState.phoneNumber,
+    username: formState.phone,
     password: formState.password,
     remember: formState.remember,
   })
@@ -169,10 +158,11 @@ const user = async () => {
     return
   }
 }
+
 const sendConfirmNumber = async () => {
-  if (!checkText('phoneNumber', '请输入正确的手机号码')) return
+  if (!checkText('phone', '请输入正确的手机号码')) return
   let time = 60
-  confirmDisabled.value = true
+  confirmBtnDisabled.value = true
   confirmText.value = `余${time}s可再次发送`
   const timer = setInterval(() => {
     if (time > 0) {
@@ -180,7 +170,7 @@ const sendConfirmNumber = async () => {
       confirmText.value = `余${time}s可再次发送`
     } else {
       clearInterval(timer)
-      confirmDisabled.value = false
+      confirmBtnDisabled.value = false
       confirmText.value = '获取验证码'
     }
   }, 1000)

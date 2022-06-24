@@ -68,7 +68,7 @@ const manageRequest = async (status, k, key) => {
   const res = await apiManageRequest({
     status,
     request: k.username,
-    class: k.class,
+    class_id: k.class_id,
   })
   if (res.Code === 0) {
     message.success(res.data)

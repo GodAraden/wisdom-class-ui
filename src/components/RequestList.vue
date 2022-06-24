@@ -37,15 +37,10 @@ const props = defineProps({
 })
 const data = ref(props.data)
 const manage = async (index, status) => {
-  console.log({
-    status: status,
-    request: props.data[index].username,
-    class: props.data[index].class,
-  })
   const res = await manageRequest({
     status: status,
     request: props.data[index].username,
-    class: props.data[index].class,
+    class_id: props.data[index].class_id,
   })
   if (res.Code === 0) {
     message.success(res.data)

@@ -26,6 +26,15 @@ export function englishToChinese (word) {
   }
 }
 
+export function formatTextToHtml (text) {
+  let html = text;
+  if (html) {
+    html = html.replace(/ /g, "&nbsp;");
+    html = html.replace(/\n/g, "<br/>");
+  }
+  return html;
+};
+
 export function globalNotice (k, manageRequest) {
   const key = k.class + '-' + k.username
   notification.open({

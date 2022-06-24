@@ -14,4 +14,7 @@
   height: 100%;
   background-color: #fff;
 }
+textarea {
+  resize: none !important;
+}
 </style>

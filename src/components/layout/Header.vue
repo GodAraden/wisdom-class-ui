@@ -91,7 +91,6 @@ import {
 } from '@/api/class.js'
 import { getPermName } from '@/utils/tools.js'
 import { classColumns as columns } from '@/utils/staticdata.js'
-import { DownOutlined } from '@ant-design/icons-vue'
 import { useRouter } from 'vue-router'
 
 const props = defineProps({

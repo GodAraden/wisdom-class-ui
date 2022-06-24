@@ -16,7 +16,6 @@
 <script setup>
 import { ref } from '@vue/reactivity'
 import { useRouter } from 'vue-router'
-import { PieChartOutlined } from '@ant-design/icons-vue'
 import { watch } from '@vue/runtime-core'
 
 const props = defineProps({
