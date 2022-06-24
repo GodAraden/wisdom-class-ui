@@ -27,6 +27,8 @@ service.interceptors.response.use(
     } else if (res.data.hasOwnProperty('error')) {
       message.error(res.data.error)
       return res.data
+    } else if (res.headers["content-type"] !== 'application/json') {
+      return res
     } else {
       message.error('出错啦')
       return Promise.reject(res.data)

@@ -7,7 +7,7 @@
     @select="select"
   >
     <a-menu-item v-for="item in options" :key="item.path">
-      <pie-chart-outlined />
+      <component :is="item.icon()"></component>
       <span>{{ item.name }}</span>
     </a-menu-item>
   </a-menu>
@@ -16,7 +16,7 @@
 <script setup>
 import { ref } from '@vue/reactivity'
 import { useRouter } from 'vue-router'
-import { watch } from '@vue/runtime-core'
+import { h, watch } from '@vue/runtime-core'
 
 const props = defineProps({
   userType: Number,

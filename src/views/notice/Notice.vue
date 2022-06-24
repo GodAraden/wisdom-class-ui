@@ -195,8 +195,7 @@ const init = async () => {
   }
 }
 
-watch(() => props.classID, init)
-init()
+watch(() => props.classID, init, { immediate: true })
 </script>
 
 <style lang="less" scoped>
