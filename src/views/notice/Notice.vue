@@ -1,17 +1,7 @@
 <template>
-  <div v-if="userType === 0" class="funcBar">
-    <a-button type="primary" @click="openCreateModal">发布通知</a-button>
-    <a-button @click="openChangeModal">修改选中通知</a-button>
-    <a-popconfirm
-      :title="`你确定要删除这 ${selectedRowKeys.length} 条通知吗`"
-      placement="bottomRight"
-      @confirm="deleteNotice"
-    >
-      <a-button danger type="primary">删除选中通知</a-button>
-    </a-popconfirm>
-  </div>
   <a-table
     size="middle"
+    class="data-view"
     :columns="columns"
     :data-source="data"
     :rowSelection="
@@ -25,14 +15,8 @@
           }
         : null
     "
-    :pagination="{
-      pageSize: 10,
-      showQuickJumper: true,
-      current: currentPage,
-      onChange: pageChange,
-      total: total,
-    }"
-    :scroll="{ y: userType === 0 ? '60.4vh' : '68.4vh' }"
+    :pagination="false"
+    :scroll="{ y: '68vh' }"
   >
     <template #bodyCell="{ column, record }">
       <template v-if="column.dataIndex === 'title'">
@@ -40,6 +24,25 @@
       </template>
     </template>
   </a-table>
+  <div class="funcbar">
+    <div v-if="userType === 0" class="btn-list">
+      <a-button type="primary" @click="openCreateModal">发布通知</a-button>
+      <a-button @click="openChangeModal">修改选中通知</a-button>
+      <a-popconfirm
+        :title="`你确定要删除这 ${selectedRowKeys.length} 条通知吗`"
+        placement="bottomRight"
+        @confirm="deleteNotice"
+      >
+        <a-button danger type="primary">删除选中通知</a-button>
+      </a-popconfirm>
+    </div>
+    <a-pagination
+      :total="total"
+      :pageSize="10"
+      showQuickJumper
+      @change="init"
+    />
+  </div>
   <a-modal
     v-model:visible="visible"
     :title="notice.id === -1 ? '发布一条通知' : '修改通知'"
@@ -73,7 +76,7 @@
 </template>
 
 <script setup>
-import { reactive, ref, watch } from 'vue'
+import { ref, watch } from 'vue'
 import { noticeColumns as columns } from '@/utils/staticdata.js'
 import { formatTextToHtml } from '@/utils/tools.js'
 import {
@@ -96,12 +99,7 @@ const visible = ref(false)
 const noticeVisible = ref(false)
 const method = ref('')
 const notice = ref({})
-const currentPage = ref(1)
 const total = ref(1)
-const pageChange = (pageNumber) => {
-  currentPage.value = pageNumber
-  init()
-}
 
 const handleOk = () => {
   handleNotice()
@@ -121,6 +119,10 @@ const onSelectChange = (newSelectedRowKeys) => {
 const handleNotice = async () => {
   let res = null
   if (method.value === 'create') {
+    if (!notice.value.title || !notice.value.content) {
+      message.warn('标题或内容不能为空')
+      return
+    }
     res = await apiCreateNotice({
       creator: props.username,
       class_id: props.classID,
@@ -183,11 +185,11 @@ const showNotice = (record) => {
   noticeVisible.value = true
 }
 
-const init = async () => {
+const init = async (page = 1) => {
   if (!props.classID) return
   const res = await apiGetNotice({
     class_id: props.classID,
-    currentPage: currentPage.value,
+    currentPage: page,
   })
   if (res.Code === 0) {
     data.value = res.data.data
@@ -197,12 +199,3 @@ const init = async () => {
 
 watch(() => props.classID, init, { immediate: true })
 </script>
-
-<style lang="less" scoped>
-.funcBar {
-  text-align: right;
-  > * {
-    margin: 10px 0.6vw;
-  }
-}
-</style>

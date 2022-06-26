@@ -52,5 +52,45 @@ const noticeColumns = [
   },
 ]
 
+const subjectColumns = [
+  {
+    title: '科目名称',
+    dataIndex: 'name',
+    width: '25%',
+  },
+  {
+    title: '考试时间',
+    dataIndex: 'date',
+    width: '20%',
+  },
+  {
+    title: '操作',
+    dataIndex: 'operation',
+    key: 'operation',
+    width: '55%',
+  },
+]
 
-export { memberColumns, classColumns, noticeColumns };
+const scoreColumns = [
+  {
+    title: '学号',
+    dataIndex: 'address',
+    width: '40%',
+  },
+  {
+    title: '姓名',
+    dataIndex: 'name',
+    width: '25%',
+  },
+  {
+    title: '分数',
+    dataIndex: 'age',
+    width: '15%',
+  },
+  {
+    title: 'operation',
+    dataIndex: 'operation',
+  },
+]
+
+export { memberColumns, classColumns, noticeColumns, subjectColumns, scoreColumns };

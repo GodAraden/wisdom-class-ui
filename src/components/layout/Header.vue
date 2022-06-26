@@ -151,7 +151,6 @@ const onSearch = async (searchValue) => {
   }
 }
 const sendRequest = async (record) => {
-  console.log(record)
   const res = await apiSendRequest({
     class_id: record.id,
     username: props.userInfo.username,

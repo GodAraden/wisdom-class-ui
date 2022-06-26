@@ -3,7 +3,7 @@
     item-layout="horizontal"
     :data-source="list"
     size="small"
-    style="padding: 0 16px"
+    class="data-view"
   >
     <template #renderItem="{ item }">
       <a-list-item>
@@ -28,21 +28,19 @@
       </a-list-item>
     </template>
   </a-list>
-  <a-button
-    v-if="userType === 0"
-    type="primary"
-    style="margin-left: 10px"
-    @click="visible = true"
-    ><upload-outlined /> 上传资源</a-button
-  >
-  <a-pagination
-    style="float: right"
-    :total="count"
-    :pageSize="8"
-    :showSizeChanger="false"
-    showQuickJumper
-    @change="init"
-  />
+  <div class="funcbar">
+    <a-button v-if="userType === 0" type="primary" @click="visible = true"
+      ><upload-outlined /> 上传资源</a-button
+    >
+    <a-pagination
+      :total="count"
+      :pageSize="8"
+      :showSizeChanger="false"
+      showQuickJumper
+      @change="init"
+    />
+  </div>
+
   <a-modal v-model:visible="visible" title="填写资源信息" @ok="updateResource">
     <pre>仅支持上传单个资源，多个资源请打包成压缩包后上传</pre>
     <a-textarea
@@ -144,10 +142,3 @@ const download = async (id) => {
 
 watch(() => props.classID, init, { immediate: true })
 </script>
-
-<style lang="less" scoped>
-.demo-loadmore-list {
-  min-height: 350px;
-  margin: 2px 12px;
-}
-</style>

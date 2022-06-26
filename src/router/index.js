@@ -5,7 +5,7 @@ import { h } from 'vue'
 const routes = [
   {
     path: '/',
-    redirect: '/auth'
+    redirect: '/user'
   }, {
     path: '/login',
     redirect: '/user'
@@ -63,6 +63,16 @@ const routes = [
         icon: () => h(LineChartOutlined),
         permission: 1,
         component: () => import('@/views/score/MyScore.vue')
+      }, {
+        path: 'score-manage',
+        name: 'score-manage',
+        component: () => import('@/views/score/Manage.vue'),
+        props: true
+      }, {
+        path: 'score-analyze',
+        name: 'score-analyze',
+        component: () => import('@/views/score/Manage.vue'),
+        props: true
       }
     ]
   }, {

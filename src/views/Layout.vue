@@ -10,7 +10,7 @@
         v-model:classID="classID"
         @init="init"
       ></my-header>
-      <a-layout-content class="layout-content-bg">
+      <a-layout-content class="layout-content-bg view-bg">
         <router-view
           :userType="parseInt(userInfo.user_type)"
           :username="userInfo.username"

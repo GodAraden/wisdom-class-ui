@@ -23,6 +23,8 @@ export function englishToChinese (word) {
       return '性别'
     case 'birthday':
       return '出生日期'
+    case 'number':
+      return '学号/工号'
   }
 }
 
