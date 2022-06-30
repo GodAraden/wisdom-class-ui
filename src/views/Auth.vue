@@ -94,7 +94,7 @@ whoAmI()
   height: 100vh;
   overflow: hidden;
   background: no-repeat
-    url('https://img0.baidu.com/it/u=3893499435,4043894321&fm=253&fmt=auto&app=138&f=JPEG?w=889&h=500');
+    url('https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fimg.jj20.com%2Fup%2Fallimg%2F1115%2F092621094155%2F210926094155-9-1200.jpg&refer=http%3A%2F%2Fimg.jj20.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1658913798&t=cedbf159d8f85a356d0553fb0bc99ed4');
   background-size: 100% 100%;
   background-attachment: fixed;
   .ant-page-header {
@@ -103,10 +103,12 @@ whoAmI()
   }
   .form-container {
     width: 61.8vw;
-    height: 80vh;
+    height: 60vh;
     margin: 0 auto;
-    padding: 2vh 0;
-    background-color: rgba(255, 255, 255, 0.7);
+    padding: 1px;
+    background-color: rgba(255, 255, 255, 0.88);
+    border-radius: 0 0 2vh 2vh;
+    transform: translateY(8%);
     .form-item {
       > .label {
         text-align: right;

@@ -22,6 +22,9 @@
       <template v-if="column.dataIndex === 'title'">
         <a @click="showNotice(record)">{{ record.title }}</a>
       </template>
+      <template v-else-if="column.dataIndex === 'last_changed'">
+        {{ dayjs(record.last_changed).format('YYYY-MM-DD HH:mm:ss') }}
+      </template>
     </template>
   </a-table>
   <div class="funcbar">
@@ -70,7 +73,8 @@
       v-html="formatTextToHtml(notice.content)"
     ></p>
     <p style="text-align: right">
-      ---- {{ notice.creator }}<br />{{ notice.last_changed }}
+      ---- {{ notice.creator }}<br />
+      {{ dayjs(notice.last_changed).format('YYYY-MM-DD HH:mm:ss') }}
     </p>
   </a-modal>
 </template>
@@ -86,6 +90,7 @@ import {
   deleteNotice as apiDeleteNotice,
 } from '@/api/notice.js'
 import { message } from 'ant-design-vue'
+import dayjs from 'dayjs'
 
 const props = defineProps({
   userType: Number,

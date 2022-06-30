@@ -39,4 +39,9 @@ textarea {
     }
   }
 }
+
+.graph-view {
+  height: 40vh;
+  width: 40vw;
+}
 </style>

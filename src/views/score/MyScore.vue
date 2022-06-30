@@ -1,54 +1,32 @@
 <template>
-  <a-table :columns="columns" :data-source="data" bordered :pagination="false">
-    <template #bodyCell="{ column, text }">
-      <template v-if="column.dataIndex === 'name'">
-        <a>{{ text }}</a>
-      </template>
-    </template>
-    <template #title>Header</template>
-    <template #footer>Footer</template>
-  </a-table>
+  <a-descriptions bordered>
+    <a-descriptions-item
+      v-for="item in data"
+      :key="item.name"
+      :label="item.name"
+    >
+      {{ item.score }}
+    </a-descriptions-item>
+  </a-descriptions>
 </template>
 <script setup>
-const columns = [
-  {
-    title: 'Name',
-    dataIndex: 'name',
-  },
-  {
-    title: 'Cash Assets',
-    className: 'column-money',
-    dataIndex: 'money',
-  },
-  {
-    title: 'Address',
-    dataIndex: 'address',
-  },
-]
-const data = [
-  {
-    key: '1',
-    name: 'John Brown',
-    money: '￥300,000.00',
-    address: 'New York No. 1 Lake Park',
-  },
-  {
-    key: '2',
-    name: 'Jim Green',
-    money: '￥1,256,000.00',
-    address: 'London No. 1 Lake Park',
-  },
-  {
-    key: '3',
-    name: 'Joe Black',
-    money: '￥120,000.00',
-    address: 'Sidney No. 1 Lake Park',
-  },
-]
-</script>
-<style>
-th.column-money,
-td.column-money {
-  text-align: right !important;
+import { ref, watch } from 'vue'
+import { individual } from '@/api/score.js'
+
+const props = defineProps({
+  userType: Number,
+  username: String,
+  classID: Number,
+})
+
+const data = ref([])
+const init = async () => {
+  if (!props.username) return
+  const res = await individual({ username: props.username })
+  if (res.Code === 0) {
+    data.value = res.data
+  }
 }
-</style>
+
+watch(() => props.username, init, { immediate: true })
+</script>

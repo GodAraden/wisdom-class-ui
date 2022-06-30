@@ -1,5 +1,6 @@
 import { h } from 'vue'
-import { notification, Button } from 'ant-design-vue'
+import { notification, Button, message } from 'ant-design-vue'
+import { read } from 'xlsx'
 
 export function getPermName (perm) {
   if (perm == '0') {
@@ -92,4 +93,53 @@ export function fileDownload (res) {
   dom.click()
   dom.parentNode.removeChild(dom)
   window.URL.revokeObjectURL(url)
+}
+
+function createUploadModal () {
+  const inputObj = document.createElement('input')
+  inputObj.setAttribute('id', 'file')
+  inputObj.setAttribute('type', 'file')
+  inputObj.setAttribute('name', 'file')
+  inputObj.setAttribute('style', 'display:none;')
+  document.body.appendChild(inputObj)
+  inputObj.value
+  inputObj.click()
+  return inputObj
+}
+
+function readWorkbookFromLocalFile (file, callback) {
+  const reader = new FileReader()
+  reader.onload = function (e) {
+    const data = e.target.result
+    const workbook = read(data, { type: 'binary' })
+    if (callback) callback(workbook)
+  }
+  reader.readAsBinaryString(file)
+}
+
+export function uploadFile (dataSource) {
+  createUploadModal().addEventListener('change', (e) => {
+    for (let entry of e?.target?.files) {
+      readWorkbookFromLocalFile(entry, (e) => {
+        dataSource.value = []
+        for (const k in e.Sheets) {
+          let i = 0
+          for (const _ in e.Sheets[k]) i++
+          const length = Math.floor(i / 3)
+          try {
+            for (let j = 1; j <= length; j++) {
+              dataSource.value.push({
+                number: e.Sheets[k]['A' + j].v.toString(),
+                name: e.Sheets[k]['B' + j].v,
+                score: e.Sheets[k]['C' + j].v,
+              })
+            }
+          } catch (e) {
+            message.warn('请上传格式正确的excel文件')
+          }
+        }
+      })
+    }
+  })
+
 }

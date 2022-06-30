@@ -73,11 +73,31 @@ const routes = [
         name: 'score-analyze',
         component: () => import('@/views/score/Manage.vue'),
         props: true
+      }, {
+        path: 'new-homework',
+        name: '发布新的作业',
+        component: () => import('@/views/homework/Manage.vue'),
+        props: true
+      }, {
+        path: 'preview-homework',
+        name: '已有作业预览',
+        component: () => import('@/views/homework/Manage.vue'),
+        props: true
+      }, {
+        path: 'homework-result',
+        name: '作业结果查看',
+        component: () => import('@/views/homework/Manage.vue'),
+        props: true
       }
     ]
   }, {
     path: '/auth',
     component: () => import('@/views/Auth.vue')
+  }, {
+    path: '/answer',
+    name: 'answer',
+    component: () => import('@/views/homework/manage/Preview.vue'),
+    props: true
   }
 ]
 const router = createRouter({

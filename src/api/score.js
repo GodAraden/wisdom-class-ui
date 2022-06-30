@@ -39,3 +39,44 @@ export function getName (data = {}) {
     data
   });
 }
+
+export function getScore (data = {}) {
+  return request({
+    url: '/api/v1/score/get',
+    method: 'post',
+    data
+  });
+}
+
+export function syncScore (data = {}) {
+  return request({
+    url: '/api/v1/score/sync',
+    method: 'post',
+    data
+  });
+}
+
+export function download (data = {}) {
+  return request({
+    url: '/api/v1/score/excel',
+    method: 'post',
+    responseType: 'blob',
+    data
+  });
+}
+
+export function analyze (data = {}) {
+  return request({
+    url: '/api/v1/score/analyze',
+    method: 'post',
+    data
+  });
+}
+
+export function individual (data = {}) {
+  return request({
+    url: '/api/v1/score/number',
+    method: 'post',
+    data
+  });
+}

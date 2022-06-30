@@ -1,68 +1,54 @@
 <template>
-  <a-list
-    class="demo-loadmore-list"
-    :loading="initLoading"
-    item-layout="horizontal"
-    :data-source="list"
+  <a-table
+    :columns="columns"
+    :data-source="homeworkList"
+    :pagination="false"
+    :scroll="{ y: '68vh' }"
   >
-    <template #renderItem="{ item }">
-      <a-list-item>
-        <template #actions>
-          <a key="list-loadmore-edit">交作业</a>
-          <a key="list-loadmore-more">删除</a>
-        </template>
-        <a-skeleton avatar :title="false" :loading="!!item.loading" active>
-          <a-list-item-meta
-            description="Ant Design, a design language for background applications, is refined by Ant UED Team"
-          >
-            <template #title>
-              <a href="https://www.antdv.com/">{{ item.name.last }}</a>
-            </template>
-            <template #avatar>
-              <a-avatar :src="item.picture.large" />
-            </template>
-          </a-list-item-meta>
-          <div>123MB</div>
-        </a-skeleton>
-      </a-list-item>
+    <template #bodyCell="{ column, record }">
+      <template v-if="column.dataIndex === 'operation'">
+        <a-button
+          v-if="!record.answered"
+          type="primary"
+          @click="answer(record.id)"
+          >作答</a-button
+        >
+        <a-button v-else-if="record.answered && record.score === null" disabled
+          >已作答，待评分</a-button
+        >
+        <a-button v-else disabled>得分：{{ record.score }}</a-button>
+      </template>
     </template>
-  </a-list>
-  <a-pagination
-    style="float: right"
-    :total="90"
-    :showSizeChanger="false"
-    showQuickJumper
-  />
+  </a-table>
 </template>
 <script setup>
-import { onMounted, ref } from 'vue'
+import { ref, watch } from 'vue'
+import { getall } from '@/api/homework.js'
+import { homeworkColumns as columns } from '@/utils/staticdata.js'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 const props = defineProps({
   userType: Number,
   username: String,
   classID: Number | null,
 })
+const homeworkList = ref([])
 
-const count = 7
-const fakeDataUrl = `https://randomuser.me/api/?results=${count}&inc=name,gender,email,nat,picture&noinfo`
-
-const initLoading = ref(true)
-const loading = ref(false)
-const data = ref([])
-const list = ref([])
-onMounted(() => {
-  fetch(fakeDataUrl)
-    .then((res) => res.json())
-    .then((res) => {
-      initLoading.value = false
-      data.value = res.results
-      list.value = res.results
-    })
-})
-</script>
-
-<style lang="less" scoped>
-.demo-loadmore-list {
-  min-height: 350px;
-  margin: 2px 12px;
+const answer = (id) => {
+  router.push({
+    name: 'answer',
+    params: { homeworkID: id, username: props.username },
+  })
 }
-</style>
+
+const init = async () => {
+  if (!props.classID) return
+  const res = await getall({ classID: props.classID, username: props.username })
+  if (res.Code === 0) {
+    homeworkList.value = res.data
+  }
+}
+
+watch(() => props.classID, init, { immediate: true })
+</script>

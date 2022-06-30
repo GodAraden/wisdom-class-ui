@@ -5,13 +5,9 @@
     :pagination="false"
     class="data-view"
   >
-    <template #bodyCell="{ column, record }">
+    <template #bodyCell="{ column }">
       <template v-if="column.dataIndex === 'operation'">
-        <a-popconfirm
-          v-if="dataSource.length"
-          title="Sure to delete?"
-          @confirm="onDelete(record.key)"
-        >
+        <a-popconfirm v-if="dataSource.length" title="Sure to delete?">
           <a>Delete</a>
         </a-popconfirm>
       </template>
